@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Notification, ConnectionStatus } from '../App';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface WebSocketManagerProps {
   onNotification: (notification: Notification) => void;
@@ -18,7 +21,7 @@ const WebSocketManager: React.FC<WebSocketManagerProps> = ({
   });
   const [retryCount, setRetryCount] = useState(0);
   const [autoReconnect, setAutoReconnect] = useState(true);
-  const reconnectTimeoutRef = useRef<number | undefined>();
+  const reconnectTimeoutRef = useRef<number | undefined>(undefined);
 
   const connect = () => {
     try {
@@ -99,12 +102,6 @@ const WebSocketManager: React.FC<WebSocketManagerProps> = ({
     }
   };
 
-  const sendPing = () => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ type: 'ping' }));
-    }
-  };
-
   useEffect(() => {
     connect();
 
@@ -120,70 +117,73 @@ const WebSocketManager: React.FC<WebSocketManagerProps> = ({
   }, []);
 
   return (
-    <div className="websocket-manager">
-      <h3>🔗 WebSocket Connection</h3>
-      
-      <div className="connection-status">
-        <div className={`status-indicator ${connectionStatus.connected ? 'connected' : 'disconnected'}`}>
-          {connectionStatus.connected ? '🟢 Connected' : '🔴 Disconnected'}
-        </div>
-        
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          WebSocket Connection
+          <Badge variant={connectionStatus.connected ? "default" : "destructive"} 
+                 className={connectionStatus.connected ? "bg-green-600 hover:bg-green-700" : ""}>
+            {connectionStatus.connected ? 'Connected' : 'Disconnected'}
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
         {connectionStatus.clientId && (
-          <div className="client-info">
-            <strong>Client ID:</strong> <code>{connectionStatus.clientId}</code>
-          </div>
-        )}
-        
-        {connectionStatus.connectTime && (
-          <div className="connect-time">
-            <strong>Connected at:</strong> {connectionStatus.connectTime.toLocaleTimeString()}
+          <div className="space-y-2">
+            <div className="text-base">
+              <span className="font-medium">Client ID:</span>
+              <code className="ml-2 px-2 py-1 bg-muted rounded text-sm">
+                {connectionStatus.clientId}
+              </code>
+            </div>
+            
+            {connectionStatus.connectTime && (
+              <div className="text-base text-muted-foreground">
+                Connected at: {connectionStatus.connectTime.toLocaleTimeString()}
+              </div>
+            )}
           </div>
         )}
 
         {retryCount > 0 && !connectionStatus.connected && (
-          <div className="retry-info">
+          <div className="text-base text-muted-foreground">
             Retry attempts: {retryCount}
           </div>
         )}
-      </div>
 
-      <div className="connection-controls">
-        <button 
-          onClick={connect} 
-          disabled={connectionStatus.connected}
-          className="connect-btn"
-        >
-          Connect
-        </button>
-        
-        <button 
-          onClick={disconnect} 
-          disabled={!connectionStatus.connected}
-          className="disconnect-btn"
-        >
-          Disconnect
-        </button>
-        
-        <button 
-          onClick={sendPing} 
-          disabled={!connectionStatus.connected}
-          className="ping-btn"
-        >
-          Send Ping
-        </button>
-      </div>
+        <div className="flex gap-2">
+          <Button 
+            onClick={connect} 
+            disabled={connectionStatus.connected}
+            size="sm"
+          >
+            Connect
+          </Button>
+          
+          <Button 
+            onClick={disconnect} 
+            disabled={!connectionStatus.connected}
+            variant="destructive"
+            size="sm"
+          >
+            Disconnect
+          </Button>
+        </div>
 
-      <div className="auto-reconnect">
-        <label>
+        <div className="flex items-center space-x-2">
           <input
             type="checkbox"
+            id="auto-reconnect"
             checked={autoReconnect}
             onChange={(e) => setAutoReconnect(e.target.checked)}
+            className="rounded"
           />
-          Auto-reconnect
-        </label>
-      </div>
-    </div>
+          <label htmlFor="auto-reconnect" className="text-base font-medium">
+            Auto-reconnect
+          </label>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

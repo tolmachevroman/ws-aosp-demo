@@ -11,7 +11,7 @@ cd server && npm install && npm start
 
 **2. Start the web app:**
 ```bash
-cd webapp && npm install && npm run dev
+cd web && npm install && npm run dev
 ```
 
 **3. Open your browser:**
@@ -22,7 +22,7 @@ cd webapp && npm install && npm run dev
 
 ```
 ├── server/     # Node.js WebSocket server (port 3001)
-├── webapp/     # React TypeScript web app (port 5173)
+├── web/        # React TypeScript web app (port 5173)
 └── android/    # Android app (coming soon)
 ```
 
@@ -63,6 +63,6 @@ curl -X POST http://localhost:3001/api/notifications/broadcast \
 cd server && npm run dev
 
 # Web app with hot reload  
-cd webapp && npm run dev
+cd web && npm run dev
 ```
 Sending push notifications using pure web sockets to an AOSP device

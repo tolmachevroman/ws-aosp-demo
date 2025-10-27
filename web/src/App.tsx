@@ -59,30 +59,36 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🔔 Push Notification Demo</h1>
-        <p>WebSocket-based real-time notifications</p>
-      </header>
-
-      <div className="app-content">
-        <div className="left-panel">
-          <WebSocketManager 
-            onNotification={handleNotification}
-            onConnectionChange={handleConnectionChange}
-          />
-          
-          <ControlPanel 
-            connectionStatus={connectionStatus}
-            serverStatus={serverStatus}
-          />
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
+            Push Notification Demo
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            WebSocket-based real-time notifications
+          </p>
         </div>
 
-        <div className="right-panel">
-          <NotificationPanel 
-            notifications={notifications}
-            onClear={clearNotifications}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <WebSocketManager 
+              onNotification={handleNotification}
+              onConnectionChange={handleConnectionChange}
+            />
+            
+            <ControlPanel 
+              connectionStatus={connectionStatus}
+              serverStatus={serverStatus}
+            />
+          </div>
+
+          <div>
+            <NotificationPanel 
+              notifications={notifications}
+              onClear={clearNotifications}
+            />
+          </div>
         </div>
       </div>
     </div>
