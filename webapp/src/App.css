@@ -1,0 +1,477 @@
+/* App Layout */
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  color: #4a5568;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.app-header p {
+  margin: 0.5rem 0 0 0;
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.app-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.left-panel, .right-panel {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* WebSocket Manager */
+.websocket-manager {
+  margin-bottom: 2rem;
+}
+
+.websocket-manager h3 {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+  font-size: 1.3rem;
+}
+
+.connection-status {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #4299e1;
+}
+
+.status-indicator {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.status-indicator.connected {
+  color: #38a169;
+}
+
+.status-indicator.disconnected {
+  color: #e53e3e;
+}
+
+.client-info, .connect-time, .retry-info {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.client-info code {
+  background: #edf2f7;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.connection-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.connection-controls button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.connect-btn {
+  background: #48bb78;
+  color: white;
+}
+
+.connect-btn:hover:not(:disabled) {
+  background: #38a169;
+}
+
+.disconnect-btn {
+  background: #f56565;
+  color: white;
+}
+
+.disconnect-btn:hover:not(:disabled) {
+  background: #e53e3e;
+}
+
+.ping-btn {
+  background: #4299e1;
+  color: white;
+}
+
+.ping-btn:hover:not(:disabled) {
+  background: #3182ce;
+}
+
+.connection-controls button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auto-reconnect {
+  margin-top: 1rem;
+}
+
+.auto-reconnect label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+}
+
+/* Control Panel */
+.control-panel h3 {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+  font-size: 1.3rem;
+}
+
+.control-panel h4 {
+  margin: 1.5rem 0 0.5rem 0;
+  color: #4a5568;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.server-status {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.status-info div {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+}
+
+.status-value {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.status-error {
+  color: #e53e3e;
+  font-style: italic;
+}
+
+.send-mode label {
+  display: block;
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+
+.target-client {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.client-id-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.use-my-id-btn {
+  padding: 0.5rem 1rem;
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+  font-family: monospace;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.send-btn, .quick-test-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.send-btn {
+  background: #48bb78;
+  color: white;
+  flex: 1;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #38a169;
+}
+
+.quick-test-btn {
+  background: #ed8936;
+  color: white;
+}
+
+.quick-test-btn:hover:not(:disabled) {
+  background: #dd6b20;
+}
+
+.send-btn:disabled,
+.quick-test-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.response-display {
+  margin-top: 1rem;
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.response-content {
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.clients-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.client-item {
+  background: #f7fafc;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.client-id code {
+  background: #edf2f7;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.my-client {
+  color: #4299e1;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.client-info {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.target-btn {
+  padding: 0.3rem 0.8rem;
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+/* Notification Panel */
+.notification-panel h3 {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+  font-size: 1.3rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.clear-btn {
+  padding: 0.5rem 1rem;
+  background: #f56565;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background: #e53e3e;
+}
+
+.clear-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.notifications-list {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.no-notifications {
+  text-align: center;
+  color: #718096;
+  padding: 2rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 2px dashed #cbd5e0;
+}
+
+.notification-item {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #4299e1;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.notification-header h4 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: #718096;
+  white-space: nowrap;
+}
+
+.notification-message {
+  color: #4a5568;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.notification-data {
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.notification-data strong {
+  color: #90cdf4;
+}
+
+.notification-data pre {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.8rem;
+  overflow-x: auto;
+}
+
+.notification-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #718096;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app-content {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  
+  .app-header {
+    padding: 1rem;
+  }
+  
+  .app-header h1 {
+    font-size: 2rem;
+  }
+  
+  .connection-controls {
+    flex-direction: column;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .target-client {
+    flex-direction: column;
+  }
+}
