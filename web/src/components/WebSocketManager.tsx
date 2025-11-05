@@ -38,6 +38,9 @@ const WebSocketManager: React.FC<WebSocketManagerProps> = ({
         setConnectionStatus(status);
         onConnectionChange(status);
         setRetryCount(0);
+        
+        // Send client identification
+        sendClientIdentification(ws);
       };
 
       ws.onmessage = (event) => {
@@ -54,6 +57,8 @@ const WebSocketManager: React.FC<WebSocketManagerProps> = ({
             };
             setConnectionStatus(updatedStatus);
             onConnectionChange(updatedStatus);
+          } else if (data.type === 'identified') {
+            console.log('Client identified:', data);
           } else if (data.type === 'notification') {
             onNotification(data);
           }
@@ -89,6 +94,88 @@ const WebSocketManager: React.FC<WebSocketManagerProps> = ({
 
     } catch (error) {
       console.error('Failed to create WebSocket connection:', error);
+    }
+  };
+  
+  const sendClientIdentification = (ws: WebSocket) => {
+    try {
+      // Get browser and platform information
+      const userAgent = navigator.userAgent;
+      
+      // Detect platform with modern approach
+      let platform = 'Unknown';
+      
+      // Try to use modern User-Agent Client Hints API when available
+      const userAgentData = (navigator as any).userAgentData;
+      if (userAgentData) {
+        platform = userAgentData.platform;
+      } else {
+        // Fallback to userAgent parsing for better Apple Silicon detection
+        if (/Mac/.test(navigator.userAgent)) {
+          // Check for Apple Silicon indicators
+          if (/Apple/.test(navigator.vendor) && navigator.maxTouchPoints > 1) {
+            platform = 'macOS (Apple Silicon)';
+          } else {
+            // Try to detect if it's actually Apple Silicon
+            try {
+              const canvas = document.createElement('canvas');
+              const gl = canvas.getContext('webgl');
+              const debugInfo = gl?.getExtension('WEBGL_debug_renderer_info');
+              const renderer = debugInfo ? gl?.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '' : '';
+              
+              if (/Apple/.test(renderer as string) && !/Intel/.test(renderer as string)) {
+                platform = 'macOS (Apple Silicon)';
+              } else if (/Intel/.test(navigator.userAgent) || navigator.platform === 'MacIntel') {
+                platform = 'macOS (Intel)';
+              } else {
+                platform = 'macOS';
+              }
+            } catch {
+              platform = 'macOS';
+            }
+          }
+        } else if (/Win/.test(navigator.userAgent)) {
+          platform = 'Windows';
+        } else if (/Linux/.test(navigator.userAgent)) {
+          platform = 'Linux';
+        } else if (/Android/.test(navigator.userAgent)) {
+          platform = 'Android';
+        } else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+          platform = 'iOS';
+        } else {
+          platform = navigator.platform || 'Unknown';
+        }
+      }
+      
+      // Detect browser
+      let browser = 'Unknown';
+      if (userAgent.indexOf('Firefox') > -1) {
+        browser = 'Firefox';
+      } else if (userAgent.indexOf('Chrome') > -1) {
+        browser = 'Chrome';
+      } else if (userAgent.indexOf('Safari') > -1) {
+        browser = 'Safari';
+      } else if (userAgent.indexOf('Edge') > -1) {
+        browser = 'Edge';
+      }
+      
+      const identificationMessage = {
+        type: 'identify',
+        clientType: 'web',
+        deviceInfo: {
+          browser,
+          platform,
+          userAgent,
+          language: navigator.language,
+          screenResolution: `${window.screen.width}x${window.screen.height}`,
+          viewport: `${window.innerWidth}x${window.innerHeight}`
+        }
+      };
+      
+      ws.send(JSON.stringify(identificationMessage));
+      console.log('Sent client identification: web');
+    } catch (error) {
+      console.error('Failed to send client identification:', error);
     }
   };
 

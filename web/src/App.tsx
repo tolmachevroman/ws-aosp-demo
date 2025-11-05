@@ -60,7 +60,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="mx-auto px-4 py-8 max-w-sm sm:max-w-2xl md:max-w-4xl lg:max-w-6xl xl:max-w-7xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">
             Push Notification Demo
@@ -70,20 +70,18 @@ function App() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="space-y-6">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="lg:w-2/3 space-y-6">
             <WebSocketManager 
               onNotification={handleNotification}
               onConnectionChange={handleConnectionChange}
             />
-            
             <ControlPanel 
               connectionStatus={connectionStatus}
               serverStatus={serverStatus}
             />
           </div>
-
-          <div>
+          <div className="lg:w-1/3">
             <NotificationPanel 
               notifications={notifications}
               onClear={clearNotifications}

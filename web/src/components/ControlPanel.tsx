@@ -78,7 +78,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   return (
     <div className="space-y-6">
       {/* Server Status */}
-      <Card>
+      <Card className="min-w-[800px]">
         <CardHeader>
           <CardTitle>Server Status</CardTitle>
         </CardHeader>
@@ -105,7 +105,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       </Card>
 
       {/* Control Panel */}
-      <Card>
+      <Card className="min-w-[800px]">
         <CardHeader>
           <CardTitle>Send Notification</CardTitle>
         </CardHeader>
@@ -224,48 +224,108 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       </Card>
 
       {/* Connected Clients */}
-      <Card className="min-w-[500px]">
+      <Card className="">
         <CardHeader>
-          <CardTitle>Connected Clients</CardTitle>
+          <CardTitle>Connected Clients ({serverStatus?.clients?.length || 0})</CardTitle>
         </CardHeader>
         <CardContent>
           {serverStatus?.clients && serverStatus.clients.length > 0 ? (
-            <div className="space-y-3 max-h-60 overflow-y-auto">
+            <div className="space-y-3 max-h-96 overflow-y-auto">
               {serverStatus.clients.map((client: any) => (
-                <div key={client.id} className="flex items-center justify-between p-4 bg-muted rounded">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <code className="text-base bg-background px-3 py-2 rounded font-mono break-all">
+                <div key={client.id} className="p-4 bg-muted rounded-lg border border-border">
+                  {/* Single horizontal line with ID, badges, and Target button */}
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <code className="text-sm bg-background px-2 py-1 rounded font-mono">
                         {client.id}
                       </code>
                       {client.id === connectionStatus.clientId && (
-                        <Badge variant="outline" className="text-sm">You</Badge>
+                        <Badge variant="outline" className="text-xs">You</Badge>
+                      )}
+                      {client.clientType && (
+                        <Badge 
+                          variant="default" 
+                          className={
+                            client.clientType === 'web' ? 'bg-blue-600' :
+                            client.clientType === 'android-emulator' ? 'bg-purple-600' :
+                            client.clientType === 'android-device' ? 'bg-green-600' :
+                            'bg-gray-600'
+                          }
+                        >
+                          {client.clientType === 'web' ? '🌐 Web' :
+                           client.clientType === 'android-emulator' ? '📱 Android Emulator' :
+                           client.clientType === 'android-device' ? '📱 Android Device' :
+                           '❓ Unknown'}
+                        </Badge>
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      {new Date(client.connectedAt).toLocaleTimeString()}
-                    </div>
+                    
+                    <Button
+                      onClick={() => {
+                        setTargetClientId(client.id);
+                        setSendMode('targeted');
+                        console.log('Target button clicked for client:', client.id);
+                      }}
+                      variant="default"
+                      size="sm"
+                      className="bg-black hover:bg-gray-800 text-white"
+                    >
+                      Target
+                    </Button>
                   </div>
-                  <Button
-                    onClick={() => {
-                      setTargetClientId(client.id);
-                      setSendMode('targeted');
-                    }}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Target
-                  </Button>
+
+                  {/* Device details below */}
+                  {client.deviceInfo && Object.keys(client.deviceInfo).length > 0 && (
+                    <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+                      {/* Android specific info */}
+                      {client.clientType?.startsWith('android') && (
+                        <>
+                          {client.deviceInfo.manufacturer && client.deviceInfo.model && (
+                            <div>
+                              <span className="font-medium">Device:</span> {client.deviceInfo.manufacturer} {client.deviceInfo.model}
+                            </div>
+                          )}
+                          {client.deviceInfo.androidVersion && (
+                            <div>
+                              <span className="font-medium">Android:</span> {client.deviceInfo.androidVersion} (API {client.deviceInfo.sdkVersion})
+                            </div>
+                          )}
+                        </>
+                      )}
+                      
+                      {/* Web specific info */}
+                      {client.clientType === 'web' && (
+                        <>
+                          {client.deviceInfo.browser && (
+                            <div>
+                              <span className="font-medium">Browser:</span> {client.deviceInfo.browser}
+                            </div>
+                          )}
+                          {client.deviceInfo.platform && (
+                            <div>
+                              <span className="font-medium">Platform:</span> {client.deviceInfo.platform}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Connection time */}
+                  <div className="mt-2 text-xs text-muted-foreground">
+                    Connected at: {new Date(client.connectedAt).toLocaleString()}
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-muted-foreground text-base text-center py-4">
+            <div className="text-muted-foreground text-base text-center py-8">
               No clients connected
             </div>
           )}
         </CardContent>
       </Card>
+
     </div>
   );
 };

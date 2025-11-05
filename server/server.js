@@ -24,7 +24,9 @@ wss.on('connection', (ws, req) => {
         id: clientId,
         ws: ws,
         connectedAt: new Date(),
-        userAgent: req.headers['user-agent'] || 'Unknown'
+        userAgent: req.headers['user-agent'] || 'Unknown',
+        clientType: 'unknown', // Will be updated when client identifies itself
+        deviceInfo: {}
     };
     
     clients.set(clientId, clientInfo);
@@ -43,8 +45,26 @@ wss.on('connection', (ws, req) => {
             const data = JSON.parse(message);
             console.log(`Message from ${clientId}:`, data);
             
+            // Handle client identification
+            if (data.type === 'identify') {
+                const client = clients.get(clientId);
+                if (client) {
+                    client.clientType = data.clientType || 'unknown';
+                    client.deviceInfo = data.deviceInfo || {};
+                    clients.set(clientId, client);
+                    console.log(`Client ${clientId} identified as: ${client.clientType}`, client.deviceInfo);
+                    
+                    // Send acknowledgment
+                    ws.send(JSON.stringify({
+                        type: 'identified',
+                        clientId: clientId,
+                        clientType: client.clientType
+                    }));
+                }
+            }
+            
             // Echo back or handle specific message types
-            if (data.type === 'ping') {
+            else if (data.type === 'ping') {
                 ws.send(JSON.stringify({
                     type: 'pong',
                     timestamp: new Date().toISOString()
@@ -75,7 +95,9 @@ app.get('/api/status', (req, res) => {
     const clientList = Array.from(clients.values()).map(client => ({
         id: client.id,
         connectedAt: client.connectedAt,
-        userAgent: client.userAgent
+        userAgent: client.userAgent,
+        clientType: client.clientType,
+        deviceInfo: client.deviceInfo
     }));
     
     res.json({
